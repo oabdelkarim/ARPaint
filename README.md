@@ -1,6 +1,6 @@
 # ARPaint
 
-![demo image](https://uploads.toptal.io/blog/image/123773/toptal-blog-image-1502228070465-88b307905525b4a9858582687a36bcc7.gif)
+![Demo Video](https://www.youtube.com/watch?v=gb9E0n8m5pE&feature=youtu.be)
 
 ARPaint demonstrates how to draw in the air with bare fingers using ARKit and Vision libraries introduced in iOS 11.
 
