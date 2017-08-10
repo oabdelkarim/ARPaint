@@ -157,12 +157,13 @@ class FocusSquare: SCNNode {
 	}
 	
 	private func pulseAction() -> SCNAction {
+        
 		let pulseOutAction = SCNAction.fadeOpacity(to: 0.4, duration: 0.5)
 		let pulseInAction = SCNAction.fadeOpacity(to: 1.0, duration: 0.5)
 		pulseOutAction.timingMode = .easeInEaseOut
 		pulseInAction.timingMode = .easeInEaseOut
-		
-        return SCNAction.repeatForever(SCNAction.sequence([pulseOutAction, pulseInAction])!)!
+        return SCNAction.repeatForever(SCNAction.sequence([pulseOutAction, pulseInAction]))
+//        return SCNAction.repeatForever(SCNAction.sequence([pulseOutAction, pulseInAction])!)!
 	}
 	
 	private func stopPulsing(for node: SCNNode?) {
@@ -242,12 +243,21 @@ class FocusSquare: SCNNode {
 			let waitAction = SCNAction.wait(duration: animationDuration * 0.75)
 			let fadeInAction = SCNAction.fadeOpacity(to: 0.25, duration: animationDuration * 0.125)
 			let fadeOutAction = SCNAction.fadeOpacity(to: 0.0, duration: animationDuration * 0.125)
-            fillPlane?.runAction(SCNAction.sequence([waitAction, fadeInAction, fadeOutAction])!)
-			
-			let flashSquareAction = flashAnimation(duration: animationDuration * 0.25)
+            fillPlane?.runAction(SCNAction.sequence([waitAction, fadeInAction, fadeOutAction]))
+            
+            let flashSquareAction = flashAnimation(duration: animationDuration * 0.25)
             for segment in segments?.prefix(8) ?? [] {
-                segment.runAction(SCNAction.sequence([waitAction, flashSquareAction])!)
+                segment.runAction(SCNAction.sequence([waitAction, flashSquareAction]))
             }
+            
+            
+            
+//            fillPlane?.runAction(SCNAction.sequence([waitAction, fadeInAction, fadeOutAction])!)
+//
+//            let flashSquareAction = flashAnimation(duration: animationDuration * 0.25)
+//            for segment in segments?.prefix(8) ?? [] {
+//                segment.runAction(SCNAction.sequence([waitAction, flashSquareAction])!)
+//            }
 		}
 		
 		isOpen = false
@@ -309,64 +319,65 @@ class FocusSquare: SCNNode {
 		return self.childNodes.first
 	}
 	
-	private func focusSquareNode() -> SCNNode {
-		/*
-		The focus square consists of eight segments as follows, which can be individually animated.
-		
-		    s1  s2
-		    _   _
-		s3 |     | s4
-		
-		s5 |     | s6
-		    -   -
-		    s7  s8
-		*/
-		let sl: Float = 0.5  // segment length
-		let st = focusSquareThickness
-		let c: Float = focusSquareThickness / 2 // correction to align lines perfectly
-		
-		let s1 = FocusSquareSegment(name: "s1", width: sl, thickness: st, color: focusSquareColor)
-		let s2 = FocusSquareSegment(name: "s2", width: sl, thickness: st, color: focusSquareColor)
-		let s3 = FocusSquareSegment(name: "s3", width: sl, thickness: st, color: focusSquareColor, vertical: true)
-		let s4 = FocusSquareSegment(name: "s4", width: sl, thickness: st, color: focusSquareColor, vertical: true)
-		let s5 = FocusSquareSegment(name: "s5", width: sl, thickness: st, color: focusSquareColor, vertical: true)
-		let s6 = FocusSquareSegment(name: "s6", width: sl, thickness: st, color: focusSquareColor, vertical: true)
-		let s7 = FocusSquareSegment(name: "s7", width: sl, thickness: st, color: focusSquareColor)
-		let s8 = FocusSquareSegment(name: "s8", width: sl, thickness: st, color: focusSquareColor)
+    private func focusSquareNode() -> SCNNode {
+        /*
+         The focus square consists of eight segments as follows, which can be individually animated.
+         
+         s1  s2
+         _   _
+         s3 |     | s4
+         
+         s5 |     | s6
+         -   -
+         s7  s8
+         */
+        let sl: Float = 0.5  // segment length
+        let st = focusSquareThickness
+        let c: Float = focusSquareThickness / 2 // correction to align lines perfectly
+        
+        let s1 = FocusSquareSegment(name: "s1", width: sl, thickness: st, color: focusSquareColor)
+        let s2 = FocusSquareSegment(name: "s2", width: sl, thickness: st, color: focusSquareColor)
+        let s3 = FocusSquareSegment(name: "s3", width: sl, thickness: st, color: focusSquareColor, vertical: true)
+        let s4 = FocusSquareSegment(name: "s4", width: sl, thickness: st, color: focusSquareColor, vertical: true)
+        let s5 = FocusSquareSegment(name: "s5", width: sl, thickness: st, color: focusSquareColor, vertical: true)
+        let s6 = FocusSquareSegment(name: "s6", width: sl, thickness: st, color: focusSquareColor, vertical: true)
+        let s7 = FocusSquareSegment(name: "s7", width: sl, thickness: st, color: focusSquareColor)
+        let s8 = FocusSquareSegment(name: "s8", width: sl, thickness: st, color: focusSquareColor)
         s1.simdPosition += float3(-(sl / 2 - c), -(sl - c), 0)
-		s2.simdPosition += float3(sl / 2 - c, -(sl - c), 0)
-		s3.simdPosition += float3(-sl, -sl / 2, 0)
-		s4.simdPosition += float3(sl, -sl / 2, 0)
-		s5.simdPosition += float3(-sl, sl / 2, 0)
-		s6.simdPosition += float3(sl, sl / 2, 0)
-		s7.simdPosition += float3(-(sl / 2 - c), sl - c, 0)
-		s8.simdPosition += float3(sl / 2 - c, sl - c, 0)
-		
-		let fillPlane = SCNPlane(width: CGFloat(1.0 - st * 2 + c), height: CGFloat(1.0 - st * 2 + c))
-		let material = SCNMaterial.material(withDiffuse: focusSquareColorLight, respondsToLighting: false)
-		fillPlane.materials = [material]
-		let fillPlaneNode = SCNNode(geometry: fillPlane)
-		fillPlaneNode.name = "fillPlane"
-		fillPlaneNode.opacity = 0.0
-		
-		let planeNode = SCNNode()
-		planeNode.simdEulerAngles = float3(.pi / 2, 0, 0) // Horizontal
-		planeNode.setUniformScale(focusSquareSize * scaleForClosedSquare)
-		planeNode.addChildNode(s1)
-		planeNode.addChildNode(s2)
-		planeNode.addChildNode(s3)
-		planeNode.addChildNode(s4)
-		planeNode.addChildNode(s5)
-		planeNode.addChildNode(s6)
-		planeNode.addChildNode(s7)
-		planeNode.addChildNode(s8)
-		planeNode.addChildNode(fillPlaneNode)
-		
-		isOpen = false
-		
-		// Always render focus square on top
-		planeNode.renderOnTop(true)
-		
-		return planeNode
-	}
+        s2.simdPosition += float3(sl / 2 - c, -(sl - c), 0)
+        s3.simdPosition += float3(-sl, -sl / 2, 0)
+        s4.simdPosition += float3(sl, -sl / 2, 0)
+        s5.simdPosition += float3(-sl, sl / 2, 0)
+        s6.simdPosition += float3(sl, sl / 2, 0)
+        s7.simdPosition += float3(-(sl / 2 - c), sl - c, 0)
+        s8.simdPosition += float3(sl / 2 - c, sl - c, 0)
+        
+        let fillPlane = SCNPlane(width: CGFloat(1.0 - st * 2 + c), height: CGFloat(1.0 - st * 2 + c))
+        let material = SCNMaterial.material(withDiffuse: focusSquareColorLight, respondsToLighting: false)
+        fillPlane.materials = [material]
+        let fillPlaneNode = SCNNode(geometry: fillPlane)
+        fillPlaneNode.name = "fillPlane"
+        fillPlaneNode.opacity = 0.0
+        
+        let planeNode = SCNNode()
+        planeNode.simdEulerAngles = float3(.pi / 2, 0, 0) // Horizontal
+        planeNode.setUniformScale(focusSquareSize * scaleForClosedSquare)
+        planeNode.addChildNode(s1)
+        planeNode.addChildNode(s2)
+        planeNode.addChildNode(s3)
+        planeNode.addChildNode(s4)
+        planeNode.addChildNode(s5)
+        planeNode.addChildNode(s6)
+        planeNode.addChildNode(s7)
+        planeNode.addChildNode(s8)
+        planeNode.addChildNode(fillPlaneNode)
+        
+        isOpen = false
+        
+        // Always render focus square on top
+        planeNode.renderOnTop(true)
+        
+        return planeNode
+    }
 }
+
