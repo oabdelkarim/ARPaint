@@ -19,10 +19,9 @@ class ViewController: UIViewController, ARSCNViewDelegate {
     var trackingFallbackTimer: Timer?
     
     let session = ARSession()
-    let fallbackConfiguration = ARSessionConfiguration()
     
-    let standardConfiguration: ARWorldTrackingSessionConfiguration = {
-        let configuration = ARWorldTrackingSessionConfiguration()
+    let standardConfiguration: ARWorldTrackingConfiguration = {
+        let configuration = ARWorldTrackingConfiguration()
         configuration.planeDetection = .horizontal
         return configuration
     }()
@@ -86,7 +85,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
 		// Prevent the screen from being dimmed after a while.
 		UIApplication.shared.isIdleTimerDisabled = true
 		
-		if ARWorldTrackingSessionConfiguration.isSupported {
+		if ARWorldTrackingConfiguration.isSupported {
 			// Start the ARSession.
 			resetTracking()
 		} else {
@@ -224,28 +223,18 @@ class ViewController: UIViewController, ARSCNViewDelegate {
 		}
 	}
     
-	func session(_ session: ARSession, cameraDidChangeTrackingState camera: ARCamera) {
+    func session(_ session: ARSession, cameraDidChangeTrackingState camera: ARCamera) {
         textManager.showTrackingQualityInfo(for: camera.trackingState, autoHide: true)
-
+        
         switch camera.trackingState {
         case .notAvailable:
-            textManager.escalateFeedback(for: camera.trackingState, inSeconds: 5.0)
+            fallthrough
         case .limited:
-            // After 10 seconds of limited quality, fall back to 3DOF mode.
-            trackingFallbackTimer = Timer.scheduledTimer(withTimeInterval: 10.0, repeats: false, block: { _ in
-                self.session.run(self.fallbackConfiguration)
-                self.textManager.showMessage("Falling back to 3DOF tracking.")
-                self.trackingFallbackTimer?.invalidate()
-                self.trackingFallbackTimer = nil
-            })
+            textManager.escalateFeedback(for: camera.trackingState, inSeconds: 3.0)
         case .normal:
             textManager.cancelScheduledMessage(forType: .trackingStateEscalation)
-            if trackingFallbackTimer != nil {
-                trackingFallbackTimer!.invalidate()
-                trackingFallbackTimer = nil
-            }
         }
-	}
+    }
 	
     func session(_ session: ARSession, didFailWithError error: Error) {
 
@@ -418,7 +407,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         let normalizedTrackImageBoundingBox = trackImageBoundingBox!.applying(t)
         
         // Transfrom the rect from view space to image space
-        guard let fromViewToCameraImageTransform = self.sceneView.session.currentFrame?.displayTransform(withViewportSize: self.sceneView.frame.size, orientation: UIInterfaceOrientation.portrait).inverted() else {
+        guard let fromViewToCameraImageTransform = self.sceneView.session.currentFrame?.displayTransform(for: UIInterfaceOrientation.portrait, viewportSize: self.sceneView.frame.size).inverted() else {
             return
         }
         var trackImageBoundingBoxInImage =  normalizedTrackImageBoundingBox.applying(fromViewToCameraImageTransform)
@@ -447,7 +436,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
             
             // Transfrom the rect from image space to view space
             trackImageBoundingBoxInImage.origin.y = 1 - trackImageBoundingBoxInImage.origin.y
-            guard let fromCameraImageToViewTransform = self.sceneView.session.currentFrame?.displayTransform(withViewportSize: self.sceneView.frame.size, orientation: UIInterfaceOrientation.portrait) else {
+            guard let fromCameraImageToViewTransform = self.sceneView.session.currentFrame?.displayTransform(for: UIInterfaceOrientation.portrait, viewportSize: self.sceneView.frame.size) else {
                 return
             }
             let normalizedTrackImageBoundingBox = trackImageBoundingBoxInImage.applying(fromCameraImageToViewTransform)
