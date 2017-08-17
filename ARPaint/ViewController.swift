@@ -302,12 +302,6 @@ class ViewController: UIViewController, ARSCNViewDelegate {
 	func resetTracking() {
 		session.run(standardConfiguration, options: [.resetTracking, .removeExistingAnchors])
 		
-		// reset timer
-		if trackingFallbackTimer != nil {
-			trackingFallbackTimer!.invalidate()
-			trackingFallbackTimer = nil
-		}
-		
 		textManager.scheduleMessage("FIND A SURFACE TO PLACE AN OBJECT",
 		                            inSeconds: 7.5,
 		                            messageType: .planeEstimation)
