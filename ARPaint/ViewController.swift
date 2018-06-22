@@ -382,13 +382,15 @@ class ViewController: UIViewController, ARSCNViewDelegate {
     
     // MARK: Object tracking
     
-    private let handler = VNSequenceRequestHandler()
+    private var handler = VNSequenceRequestHandler()
     fileprivate var lastObservation: VNDetectedObjectObservation?
     var trackImageBoundingBox: CGRect?
     var trackImageInitialOrigin: CGPoint?
     let trackImageSize = CGFloat(20)
     
     @objc private func tapAction(recognizer: UITapGestureRecognizer) {
+        
+        handler = VNSequenceRequestHandler()
         
         lastObservation = nil
         let tapLocation = recognizer.location(in: view)

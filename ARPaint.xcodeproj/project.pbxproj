@@ -198,7 +198,7 @@
 				TargetAttributes = {
 					3929C4871E89EC2C00E00B60 = {
 						CreatedOnToolsVersion = 9.0;
-						DevelopmentTeam = U97HH4RE69;
+						DevelopmentTeam = MDBBH5S24M;
 						LastSwiftMigration = 0900;
 						ProvisioningStyle = Automatic;
 					};
@@ -378,10 +378,10 @@
 				CODE_SIGN_IDENTITY = "-";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = U97HH4RE69;
+				DEVELOPMENT_TEAM = MDBBH5S24M;
 				INFOPLIST_FILE = "$(SRCROOT)/ARPaint/Resources/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.vimov.apple-samplecode.arkit-sample-app";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.badrit.apple-samplecode.arkit-sample-app";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
@@ -397,10 +397,10 @@
 				CODE_SIGN_IDENTITY = "-";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = U97HH4RE69;
+				DEVELOPMENT_TEAM = MDBBH5S24M;
 				INFOPLIST_FILE = "$(SRCROOT)/ARPaint/Resources/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.vimov.apple-samplecode.arkit-sample-app";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.badrit.apple-samplecode.arkit-sample-app";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
